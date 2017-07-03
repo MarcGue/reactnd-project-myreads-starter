@@ -19,7 +19,7 @@ class Search extends React.Component {
     }
 
     render() {
-        const { books } = this.props
+        const { books, onUpdate } = this.props
         const { query } = this.state
 
         let filteredBooks
@@ -47,7 +47,11 @@ class Search extends React.Component {
                     <ol className="books-grid">
                         {filteredBooks.map((book) => (
                             <li key={book.id}>
-                                <Book book={book}/>
+                                <Book 
+                                    book={book}
+                                    shelf={book.shelf}
+                                    onUpdate={onUpdate}
+                                />
                             </li>
                         ))}
                     </ol>

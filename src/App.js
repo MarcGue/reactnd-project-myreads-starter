@@ -1,8 +1,8 @@
 import React from 'react'
-import { Route, Link } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import Search from './Components/Search'
-import Book from './Components/Book'
+import BookList from './Components/BookList'
 import './App.css'
 
 class BooksApp extends React.Component {
@@ -17,7 +17,10 @@ class BooksApp extends React.Component {
 
   componentDidMount() {
     this.search("Web Development", 50)
-    
+    this.getAll()
+  }
+
+  getAll() {
     BooksAPI.getAll().then((books) => {
       this.setState( {books} )
     })
@@ -29,73 +32,48 @@ class BooksApp extends React.Component {
     })
   }
 
-  /*global filterBooks b:true*/
+  /*global update b:true*/
   /*eslint no-undef: "error"*/
-  filterBooks(shelf) {
-    return this.state.books.map((book) => {
-      let retVal = ''
-      if (book.shelf === shelf) {
-        return (
-          <li key={book.id}>
-            <Book book={book} />
-          </li>
-          )
-        }
-        return retVal
+  update = (bookToUpdate, shelf)  => {
+    const books = this.state.books
+
+    BooksAPI.update(bookToUpdate, shelf)
+    .then((data) => {
+      return BooksAPI.get(bookToUpdate.id)
+    })
+    .then((updatedBook) => {
+      const filteredBooks = books.filter(book => book.id === updatedBook.id)
+      if (filteredBooks.length === 0) {
+        books.push(updatedBook)
+      }
+
+      this.setState({
+        books: books.map((book) => {
+          return book.id === updatedBook.id
+            ? Object.assign({}, book, {shelf: shelf})
+            : book
+          })
+        })
     })
   }
 
   render() {
-    const {availableBooks} = this.state
+    const { books, availableBooks } = this.state
 
     return (
       <div className="app">
         <Route exact path="/search" render={() => (
           <Search 
             books={availableBooks}
-            onSearch={(searchValue, maxResults) => {
-              this.search(searchValue, maxResults)
-            }}
+            onUpdate={this.update}
           />
         )}/>
 
         <Route exact path="/" render={() => (
-          <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
-            </div>
-            <div className="list-books-content">
-              <div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Currently Reading</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                      {this.filterBooks('currentlyReading')}
-                    </ol>
-                  </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Want to Read</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                      {this.filterBooks('wantToRead')}
-                    </ol>
-                  </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Read</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                      {this.filterBooks('read')}
-                    </ol>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="open-search">
-              <Link to="/search">Add a book</Link>
-            </div>
-          </div>
+          <BookList 
+            books={books}
+            onUpdate={this.update}
+          />
         )}/>
       </div>
     )
