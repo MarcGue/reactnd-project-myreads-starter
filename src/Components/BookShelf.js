@@ -2,14 +2,6 @@ import React from 'react'
 import Book from './Book'
 
 class BookShelf extends React.Component {
-    constructor(props) {
-        super(props)
-        
-        this.state = {
-
-        }
-    }
-
     render() {
         const { title, books, onUpdate } = this.props
 

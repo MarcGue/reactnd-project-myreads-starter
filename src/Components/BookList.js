@@ -3,14 +3,6 @@ import { Link } from 'react-router-dom'
 import BookShelf from './BookShelf'
 
 class BookList extends React.Component {
-    constructor(props) {
-        super(props)
-
-        this.state = {
-
-        }
-    }
-
     render() {
         const { books, onUpdate } = this.props
 
