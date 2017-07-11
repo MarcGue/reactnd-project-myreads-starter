@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import escapeRegExp from 'escape-string-regexp'
+import { PropTypes } from 'prop-types';
+import * as BooksAPI from '../BooksAPI'
 import Book from './Book'
 
 class Search extends React.Component {
@@ -8,27 +9,28 @@ class Search extends React.Component {
         super(props)
         
         this.state = {
-            query: ''
+            query: '',
+            books: []
         }
     }
 
-    /*global updateQuery b:true*/
-    /*eslint no-undef: "error"*/
     updateQuery = (query) => {
         this.setState({query: query})
+        if (query.length !== 0) {
+            BooksAPI.search(query, 50)
+            .then((books) => {
+                this.setState({books: books})
+            })
+            .catch((error) => {
+                console.log(error);
+                this.setState({books: []})
+            })
+        }
     }
 
     render() {
-        const { books, onUpdate } = this.props
-        const { query } = this.state
-
-        let filteredBooks
-        if (query) {
-            const match = new RegExp(escapeRegExp(query), 'i')
-            filteredBooks = books.filter((book) => match.test(book.title) || match.test(book.authors))
-        } else {
-            filteredBooks = books
-        }
+        const { onUpdateShelf } = this.props
+        const { query, books } = this.state
 
         return (
             <div className="search-books">
@@ -45,12 +47,12 @@ class Search extends React.Component {
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
-                        {filteredBooks.map((book) => (
+                        {books.map((book) => (
                             <li key={book.id}>
                                 <Book 
                                     book={book}
                                     shelf={book.shelf}
-                                    onUpdate={onUpdate}
+                                    onUpdateShelf={onUpdateShelf}
                                 />
                             </li>
                         ))}
@@ -59,6 +61,10 @@ class Search extends React.Component {
             </div>
         )
     }
+}
+
+Search.propTypes = {
+    onUpdateShelf: PropTypes.func.isRequired
 }
 
 export default Search

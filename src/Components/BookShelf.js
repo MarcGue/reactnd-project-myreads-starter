@@ -1,9 +1,10 @@
 import React from 'react'
+import { PropTypes } from 'prop-types';
 import Book from './Book'
 
 class BookShelf extends React.Component {
     render() {
-        const { title, books, onUpdate } = this.props
+        const { title, books, onUpdateShelf } = this.props
 
         return (
             <div className="bookshelf">
@@ -15,7 +16,7 @@ class BookShelf extends React.Component {
                             <Book 
                                 book={book}
                                 shelf={book.shelf} 
-                                onUpdate={onUpdate}
+                                onUpdateShelf={onUpdateShelf}
                             />
                         </li>
                     ))}
@@ -24,6 +25,12 @@ class BookShelf extends React.Component {
             </div>
         )
     }
+}
+
+BookShelf.propTypes = {
+    title: PropTypes.string.isRequired,
+    books: PropTypes.array.isRequired,
+    onUpdateShelf: PropTypes.func.isRequired
 }
 
 export default BookShelf

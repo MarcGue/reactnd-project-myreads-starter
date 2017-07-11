@@ -1,10 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { PropTypes } from 'prop-types';
 import BookShelf from './BookShelf'
 
 class BookList extends React.Component {
     render() {
-        const { books, onUpdate } = this.props
+        const { books, onUpdateShelf } = this.props
 
         return (
             <div className="list-books">
@@ -16,17 +17,17 @@ class BookList extends React.Component {
                         <BookShelf 
                             title='Currently reading'
                             books={books.filter(book => 'currentlyReading' === book.shelf)}
-                            onUpdate={onUpdate}
+                            onUpdateShelf={onUpdateShelf}
                         />
                         <BookShelf 
                             title='Want to read'
                             books={books.filter(book => 'wantToRead' === book.shelf)}
-                            onUpdate={onUpdate}
+                            onUpdateShelf={onUpdateShelf}
                         />
                         <BookShelf 
                             title='Read'
                             books={books.filter(book => 'read' === book.shelf)}
-                            onUpdate={onUpdate}
+                            onUpdateShelf={onUpdateShelf}
                         />
                     </div>
                 </div>
@@ -36,6 +37,11 @@ class BookList extends React.Component {
           </div>
         )
     }
+}
+
+BookList.propTypes = {
+    onUpdateShelf: PropTypes.func.isRequired,
+    books: PropTypes.array.isRequired
 }
 
 export default BookList

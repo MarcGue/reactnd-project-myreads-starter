@@ -10,69 +10,45 @@ class BooksApp extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      availableBooks: [],
       books: []
     }
   }
 
   componentDidMount() {
-    this.search("Web Development", 50)
-    this.getAll()
-  }
-
-  getAll() {
     BooksAPI.getAll().then((books) => {
-      this.setState( {books} )
-    })
-  }
-
-  search(searchValue, maxResults) {
-    BooksAPI.search(searchValue, maxResults).then((availableBooks) => {
-      this.setState( {availableBooks} )
-    })
-  }
-
-  /*global update b:true*/
-  /*eslint no-undef: "error"*/
-  update = (bookToUpdate, shelf)  => {
-    const books = this.state.books
-
-    BooksAPI.update(bookToUpdate, shelf)
-    .then((data) => {
-      return BooksAPI.get(bookToUpdate.id)
-    })
-    .then((updatedBook) => {
-      const filteredBooks = books.filter(book => book.id === updatedBook.id)
-      if (filteredBooks.length === 0) {
-        books.push(updatedBook)
+      if (books) {
+        this.setState({books})
       }
+    })
+  }
 
-      this.setState({
-        books: books.map((book) => {
-          return book.id === updatedBook.id
-            ? Object.assign({}, book, {shelf: shelf})
-            : book
-          })
-        })
+  updateShelf = (book, shelf) => {
+    BooksAPI.update(book, shelf)
+    .then((data) => {
+      return BooksAPI.getAll() 
+    })
+    .then((books) => {
+      if (books) {
+        this.setState({books})
+      }
     })
   }
 
   render() {
-    const { books, availableBooks } = this.state
+    const { books } = this.state
 
     return (
       <div className="app">
         <Route exact path="/search" render={() => (
           <Search 
-            books={availableBooks}
-            onUpdate={this.update}
+            onUpdateShelf={this.updateShelf}
           />
         )}/>
 
         <Route exact path="/" render={() => (
           <BookList 
             books={books}
-            onUpdate={this.update}
+            onUpdateShelf={this.updateShelf}
           />
         )}/>
       </div>
