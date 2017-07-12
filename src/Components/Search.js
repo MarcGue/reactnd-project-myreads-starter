@@ -10,27 +10,33 @@ class Search extends React.Component {
         
         this.state = {
             query: '',
-            books: []
+            searchResults: []
         }
     }
 
-    updateQuery = (query) => {
-        this.setState({query: query})
+    queryChanged = (query) => {
+        this.setState({query})
         if (query.length !== 0) {
             BooksAPI.search(query, 50)
-            .then((books) => {
-                this.setState({books: books})
+            .then((searchResults) => {
+                const mappedSearchResults = searchResults.map((searchResult) => {
+                let matchedBook = this.props.books.find(book => book.id === searchResult.id)
+                searchResult.shelf = matchedBook ? matchedBook.shelf : 'none'
+                return searchResult
+                })
+
+                this.setState({searchResults: mappedSearchResults})
             })
             .catch((error) => {
                 console.log(error);
-                this.setState({books: []})
+                this.setState({searchResults: []})
             })
         }
     }
 
     render() {
         const { onUpdateShelf } = this.props
-        const { query, books } = this.state
+        const { query, searchResults } = this.state
 
         return (
             <div className="search-books">
@@ -42,16 +48,16 @@ class Search extends React.Component {
                             name="searchValue" 
                             placeholder="Search by title or author"
                             value={query}
-                            onChange={(event) => this.updateQuery(event.target.value)}/>
+                            onChange={(event) => this.queryChanged(event.target.value)}/>
                     </div>
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
-                        {books.map((book) => (
-                            <li key={book.id}>
+                        {searchResults.map((result) => (
+                            <li key={result.id}>
                                 <Book 
-                                    book={book}
-                                    shelf={book.shelf}
+                                    book={result}
+                                    shelf={result.shelf}
                                     onUpdateShelf={onUpdateShelf}
                                 />
                             </li>
