@@ -20,9 +20,9 @@ class Search extends React.Component {
             BooksAPI.search(query, 50)
             .then((searchResults) => {
                 const mappedSearchResults = searchResults.map((searchResult) => {
-                let matchedBook = this.props.books.find(book => book.id === searchResult.id)
-                searchResult.shelf = matchedBook ? matchedBook.shelf : 'none'
-                return searchResult
+                    let matchedBook = this.props.books.find(book => book.id === searchResult.id)
+                    searchResult.shelf = matchedBook ? matchedBook.shelf : 'none'
+                    return searchResult
                 })
 
                 this.setState({searchResults: mappedSearchResults})
