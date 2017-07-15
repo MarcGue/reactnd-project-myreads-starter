@@ -27,12 +27,11 @@ class BooksApp extends React.Component {
   updateShelf = (book, shelf) => {
     BooksAPI.update(book, shelf)
     .then((data) => {
-      return BooksAPI.getAll() 
-    })
-    .then((books) => {
-      if (books) {
-        this.setState({books})
-      }
+      // Suggestion of Udacity Reviewer
+      book.shelf = shelf
+      this.setState(state => ({
+        books: state.books.filter(b => b.id !== book.id).concat([ book ])
+      }))
     })
   }
 
