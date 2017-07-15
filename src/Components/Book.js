@@ -2,6 +2,8 @@ import React from 'react'
 import { PropTypes } from 'prop-types';
 
 class Book extends React.Component {
+    /* global updateShelf b:true */
+    /* eslint no-undef: "error" */
     updateShelf = (e) => {
         const book = this.props.book
         const shelf = e.target.value
@@ -9,7 +11,7 @@ class Book extends React.Component {
     }
 
     render() {
-        const { book, shelf } = this.props
+        const {book, shelf} = this.props
         
         return (
             <div className="book">

@@ -14,6 +14,8 @@ class Search extends React.Component {
         }
     }
 
+    /* global queryChanged b:true */
+    /* eslint no-undef: "error" */
     queryChanged = (query) => {
         this.setState({query})
         if (query.length !== 0) {
@@ -35,8 +37,8 @@ class Search extends React.Component {
     }
 
     render() {
-        const { onUpdateShelf } = this.props
-        const { query, searchResults } = this.state
+        const {onUpdateShelf} = this.props
+        const {query, searchResults} = this.state
 
         return (
             <div className="search-books">

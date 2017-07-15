@@ -5,7 +5,7 @@ import BookShelf from './BookShelf'
 
 class BookList extends React.Component {
     render() {
-        const { books, onUpdateShelf } = this.props
+        const {books, onUpdateShelf} = this.props
 
         return (
             <div className="list-books">

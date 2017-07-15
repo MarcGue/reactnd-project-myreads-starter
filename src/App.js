@@ -22,6 +22,8 @@ class BooksApp extends React.Component {
     })
   }
 
+  /* global updateShelf b:true */
+  /* eslint no-undef: "error" */
   updateShelf = (book, shelf) => {
     BooksAPI.update(book, shelf)
     .then((data) => {
